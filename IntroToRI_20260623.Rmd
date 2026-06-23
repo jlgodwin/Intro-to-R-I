@@ -1,7 +1,7 @@
 ---
 title: "CSDE Workshop-Intro to R I: Objects & Programming"
 author: "Jessica Godwin & Deven Hamilton"
-date: "June 17, 2024"
+date: "June 23, 2026"
 output: 
  html_document:
    toc: true
@@ -584,10 +584,10 @@ As a vector:
 
 ```{r}
 (income <- c("<$10,000"
-, "$10,000-$49,999"
-, "$50,000-$99,999"
-, "$100,000-$200,000"
-, ">$200,000"))
+             , "$10,000-$49,999"
+             , "$50,000-$99,999"
+             , "$100,000-$200,000"
+             , ">$200,000"))
 ```
 
 Because these are characters, they do not sort in proper numeric order:
@@ -612,18 +612,18 @@ Other than vectors, data frames are probably the most used data type in R. You c
 ```{r}
 # income levels 
 inc <- c("<$10,000"
-, "$10,000-$49,999"
-, "$50,000-$99,999"
-, "$100,000-$200,000"
-, ">$200,000")
+         , "$10,000-$49,999"
+         , "$50,000-$99,999"
+         , "$100,000-$200,000"
+         , ">$200,000")
 
 BMI <-  data.frame(
-   sid = c("A1001", "A1002", "B1001"),
-   gender = c("Male", "Male","Female"), 
-   height_cm = c(152, 171.5, 165), 
-   weight_kg = c(81, 93, 78),
-   age_y = c(42, 38, 26),
-   income = factor(c("$50,000-$99,999", "$100,000-$200,000", "<$10,000"), levels = inc)
+  sid = c("A1001", "A1002", "B1001"),
+  gender = c("Male", "Male","Female"), 
+  height_cm = c(152, 171.5, 165), 
+  weight_kg = c(81, 93, 78),
+  age_y = c(42, 38, 26),
+  income = factor(c("$50,000-$99,999", "$100,000-$200,000", "<$10,000"), levels = inc)
 )
 print(BMI)
 ```
@@ -645,8 +645,68 @@ x     #New object
 
 Sometimes you will want to clear every object you've stored in your environment. This is done using the `rm()` function.
 
-```{r}
+```{r, eval=FALSE}
 rm(list=ls())
+```
+
+# if statements
+
+An `if` statement is a logical statement present in every programming language. In `R` there are several flavors (also true in most high-level programming languages):
+
+1. `ifelse()`: a function (similar to IF in Excel) that takes three arguments - a logical test, a value to return if that test evaluates to `TRUE`, and a value to return if the test evaluates to `FALSE`
+2.  `case_when`: a multiple case `ifelse()`, if you will, for each case you express a test and return value as a formula
+3. `if-else` statements: wrappers for code to execute when logical tests evaluate to `TRUE`
+
+## `ifelse()`
+
+Suppose we want to create a binary indicator for rows where `gender == "Female"`.
+
+```{r ifelse}
+ifelse(BMI$gender == "Female", 1, 0)
+```
+
+The tidyverse version of `ifelse` is `if_else`.
+
+```{r if_else}
+library(tidyr)
+library(dplyr)
+if_else(BMI$gender == "Male", 1, 0)
+```
+
+## `case_when()`
+
+`case_when()` is a function borrowed from SQL that allows you to deal with multiple (more than two) cases for logical testing, as opposed to putting an additional `ifelse()` statement in one of the last two arguments of `ifelse()`.
+
+Suppose we want to create new labels for our `income` variable that are more plot friendly.
+
+```{r case_when}
+case_when(grepl("\\$10,0", income) ~ "<10K",
+          grepl("^\\$5", income) ~ "50K-90K",
+          grepl("^\\$100", income) ~ "100K-200K",
+          TRUE ~ NA)
+```
+
+## `if` statements
+
+When the result of a logical test changes what code will be run for a large chunk of code, we use `if` and `ifelse` statements.
+
+Suppose we want to find the median of a vector.
+
+```{r if}
+n_samp <- 100
+x_vec <- rnorm(n_samp)
+
+## Test if even
+n_samp %/% 2
+n_samp %% 0
+
+if(length(x_vec) == 0){
+  stop("x_vec must have length larger than 0.\n")
+}else if((n_samp %% 2) == 0){
+  return(x_vec[n_samp/2])
+}else{
+  return(mean(x_vec[(n_samp %/% 2):((n_samp %/% 2) + 1)]))
+}
 ```
 
 
@@ -667,7 +727,7 @@ Most functions are created with code of the form
 
 ```         
 function_name <- function(argument(s)){
-    statement(s)
+statement(s)
 }
 ```
 
@@ -675,7 +735,7 @@ For example, to square a vector of numerical values:
 
 ```{r}
 f_square <- function(x){
-    x^2
+  x^2
 }
 ```
 
@@ -690,10 +750,10 @@ Here, let's modify the function to demonstrate that within the environment of th
 
 ```{r}
 f_square_2 <- function(x){
-    message("input:")
-    print(x)
-    message("output:")
-    x^2
+  message("input:")
+  print(x)
+  message("output:")
+  x^2
 }
 
 f_square_2(c(1,2,3))
@@ -717,13 +777,13 @@ Here we run with the default option `verbose = FALSE`; only the final value `x^2
 
 ```{r}
 f_square_3 <- function(x, verbose = FALSE){
-    # only run the next lines if verbose is true
-    if(verbose){
-        message("input:")
-        print(x)
-        message("output:")
-    }
-    x^2
+  # only run the next lines if verbose is true
+  if(verbose){
+    message("input:")
+    print(x)
+    message("output:")
+  }
+  x^2
 }
 
 f_square_3(x = c(1,2,3))
@@ -744,7 +804,7 @@ In our original `f_square()` function, the return value is `x^2` since no other 
 
 ```{r}
 f_square <- function(x){
-    x^2
+  x^2
 }
 f_square(3)
 ```
@@ -759,23 +819,23 @@ However, if it is possible that different outputs can be produced by a function 
 
 ```{r}
 f_compare <- function(x, y){
-    # either missing?
-    if(nargs() != 2)
-        return("invalid number of arguments")
-    # numeric?
-    if(!is.numeric(x) | !is.numeric(y)){
-        return(sprintf("%s or %s is not numeric.", x, y))
-    }
-    # comparisons follow
-    if(x > y){
-        return(sprintf("%s is greater than %s", x, y))
-    } 
-    if(x < y) {
-        return(sprintf("%s is less than %s", x, y))
-    }
-    if(x == y){
-        return(sprintf("%s equals %s", x, y))
-    }
+  # either missing?
+  if(nargs() != 2)
+    return("invalid number of arguments")
+  # numeric?
+  if(!is.numeric(x) | !is.numeric(y)){
+    return(sprintf("%s or %s is not numeric.", x, y))
+  }
+  # comparisons follow
+  if(x > y){
+    return(sprintf("%s is greater than %s", x, y))
+  } 
+  if(x < y) {
+    return(sprintf("%s is less than %s", x, y))
+  }
+  if(x == y){
+    return(sprintf("%s equals %s", x, y))
+  }
 }
 ```
 
@@ -800,7 +860,7 @@ A for loop is constructed using the form ...
 
 ```         
 for (element in set){
-    do something
+do something
 }
 ```
 
@@ -812,7 +872,7 @@ Print each letter in the first 5 letters of the alphabet. In this example, the i
 
 ```{r}
 for (i in head(letters, 5)){
-    print(i)
+  print(i)
 }
 ```
 
@@ -820,7 +880,7 @@ In this example, the object `i` takes on integer values 1 through 10. Within the
 
 ```{r}
 for(i in 1:10){
-    message(paste(i, "squared equals", i^2))
+  message(paste(i, "squared equals", i^2))
 }
 ```
 
@@ -832,8 +892,8 @@ states_5 <- head(state.name, 5)
 
 # iterate over those
 for (i in 1:length(states_5)){
-    s <- states_5[i]
-    message(paste0(i, ": ", s))
+  s <- states_5[i]
+  message(paste0(i, ": ", s))
 }
 ```
 
@@ -843,7 +903,7 @@ A for loop is constructed using the form ...
 
 ```         
 while (condition is met){
-    do something
+do something
 }
 ```
 
@@ -863,7 +923,7 @@ sequence <- c(1, 1)
 print(sequence[1])
 print(sequence)
 while(sequence[length(sequence)] +
-          sequence[length(sequence) - 1] < 100){
+      sequence[length(sequence) - 1] < 100){
   term_no <- length(sequence) + 1
   
   sequence <- c(sequence,

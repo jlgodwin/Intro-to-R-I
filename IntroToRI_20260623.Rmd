@@ -47,7 +47,7 @@ Rstudio has four main panels that allow you to organize your code and have a bet
 Open a new .R script by clicking File $\rightarrow$ New File $\rightarrow$ R Script. We can execute code by highlighting it in a source file and clicking the run button.\
 ![](Figures/script.png)
 
-We can also execute code by typing it directly into the console and pressing enter. 
+We can also execute code by typing it directly into the console and pressing enter.
 
 ![](Figures/Console.png)
 
@@ -130,6 +130,7 @@ Examples of `R` object types:
 -   function
 
 ## Data types
+
 The most atomic object in R will exist having one of those data types, described below. An atomic object of the data type can have a value, `NA` which represents an observation with no data (e.g., a missing measurement), or `NULL` which isn't really a value at all, but can still have the data type class.
 
 You will encounter other data types, such as `Date` or `POSIXct` if you are working with dates or time stamps. These other data types are extensions of the fundamental data types.
@@ -172,8 +173,8 @@ age_jane <- NA
 Logical values are often expressed in binary format as 0 = `FALSE` and 1 =`TRUE\`. In R these values are interconvertible. Other software (e.g., Excel, MS Access) may convert logical values to numbers that you do not expect.
 
 ```{r}
-(t <- as.logical(1))
-(f <- as.logical(0))
+(is_this_true <- as.logical(1))
+(is_this_false <- as.logical(0))
 ```
 
 ### Numeric
@@ -242,7 +243,6 @@ There are 5 basic data structures in R, as shown in the graphic:
 5.  list
 
 ![](Figures/data_structures.png)
-
 
 In addition, the `factor` data type is very important
 
@@ -364,6 +364,7 @@ Many of `R`'s statistics functions take vectors as arguments.
 ```{r}
 mean(v)
 sd(v)
+median(v)
 ```
 
 ### Matrix
@@ -375,7 +376,7 @@ A matrix is like a vector, in that it can contain only one data type, but it is 
 (v <- 1:100)
 
 # load to a matrix
-(m1 <- matrix(v, ncol = 10, byrow = TRUE))
+m1 <- matrix(v, ncol = 10, byrow = TRUE)
 
 # different r, c ordering
 (m2 <- matrix(v, ncol = 10, byrow = FALSE))
@@ -386,7 +387,6 @@ If you try to force a vector into a matrix whose row $\times$ col length does no
 ```{r}
 (m3 <- matrix(letters, ncol = 10, nrow = 10))
 ```
-
 
 Let's create a matrix of zeroes and add 1's to the diagonal.
 
@@ -553,9 +553,9 @@ Here is an example of a list comprised of single value vectors of different data
 Let's modify that list a bit:
 
 ```{r}
-(l <- list("a", 
-           1:20, 
-           as.logical(c(0,1,1,0))))
+(l <- list(elem_one = "a", 
+           elem_two = 1:20, 
+           elem_three = as.logical(c(0,1,1,0))))
 ```
 
 The top-level indexing for a list is denoted using two sets of square brackets. For example, the first element of our list can be accessed by `l[[1]]`. For example, the mean of element 2 is obtained by `mean(l[[2]])`: `r mean(l[[2]])`.
@@ -607,6 +607,7 @@ If these are treated as a factor, the levels can be set for proper ordering:
 ```
 
 ### Data frame
+
 Other than vectors, data frames are probably the most used data type in R. You can think of data frames as matrices that allow columns with different data type. For example, you might have a data set that represents subject IDs as characters, sex or gender as text, height, weight, and age as numerical values, income as a factor, and smoking status as logical. Because a matrix requires only one data type, it would not be possible to store all of these as a matrix. An example:
 
 ```{r}
@@ -627,6 +628,7 @@ BMI <-  data.frame(
 )
 print(BMI)
 ```
+
 ## The environment
 
 The function \texttt{ls()} will list all of the objects that have been created:
@@ -653,9 +655,9 @@ rm(list=ls())
 
 An `if` statement is a logical statement present in every programming language. In `R` there are several flavors (also true in most high-level programming languages):
 
-1. `ifelse()`: a function (similar to IF in Excel) that takes three arguments - a logical test, a value to return if that test evaluates to `TRUE`, and a value to return if the test evaluates to `FALSE`
+1.  `ifelse()`: a function (similar to IF in Excel) that takes three arguments - a logical test, a value to return if that test evaluates to `TRUE`, and a value to return if the test evaluates to `FALSE`
 2.  `case_when`: a multiple case `ifelse()`, if you will, for each case you express a test and return value as a formula
-3. `if-else` statements: wrappers for code to execute when logical tests evaluate to `TRUE`
+3.  `if-else` statements: wrappers for code to execute when logical tests evaluate to `TRUE`
 
 ## `ifelse()`
 
@@ -681,7 +683,7 @@ Suppose we want to create new labels for our `income` variable that are more plo
 
 ```{r case_when}
 case_when(grepl("\\$10,0", income) ~ "<10K",
-          grepl("^\\$5", income) ~ "50K-90K",
+          grepl("^\\$5", income) ~ "50K-100K",
           grepl("^\\$100", income) ~ "100K-200K",
           TRUE ~ NA)
 ```
@@ -698,17 +700,16 @@ x_vec <- rnorm(n_samp)
 
 ## Test if even
 n_samp %/% 2
-n_samp %% 0
+n_samp %% 2
 
 if(length(x_vec) == 0){
   stop("x_vec must have length larger than 0.\n")
-}else if((n_samp %% 2) == 0){
-  return(x_vec[n_samp/2])
+}else if((n_samp %% 2) != 0){
+  return(x_vec[(n_samp %/% 2) + 1])
 }else{
   return(mean(x_vec[(n_samp %/% 2):((n_samp %/% 2) + 1)]))
 }
 ```
-
 
 # Functions {#rfunc}
 
@@ -739,8 +740,7 @@ f_square <- function(x){
 }
 ```
 
-the function name is `f_square`.
-## Arguments
+the function name is `f_square`. \## Arguments
 
 Most functions require arguments. Arguments are used to instantiate variables within the function's environment that can be used later in the body of the function. Each argument is named, and the name is used within the function as a local variable within the function's environment.
 
@@ -750,9 +750,9 @@ Here, let's modify the function to demonstrate that within the environment of th
 
 ```{r}
 f_square_2 <- function(x){
-  message("input:")
+  message("input:\n")
   print(x)
-  message("output:")
+  message("output:\n")
   x^2
 }
 
@@ -761,13 +761,13 @@ f_square_2(c(1,2,3))
 
 ### The `...` argument
 
-When functions do not have a known *a priori* number or set of arguments, or when a large number of arguments is to be passed to another function the `...` argument is used. We will not cover this here, but you are encouraged to read more: [How to Use the Dots Argument in R](https://www.dummies.com/programming/r/how-to-use-the-dots-argument-in-r/); [The three-dots construct in R](https://www.r-bloggers.com/2013/01/the-three-dots-construct-in-r/).
+When functions do not have a known a priori number or set of arguments, or when a large number of arguments is to be passed to another function the `...` argument is used. We will not cover this here, but you are encouraged to read more: [How to Use the Dots Argument in R](https://www.dummies.com/programming/r/how-to-use-the-dots-argument-in-r/); [The three-dots construct in R](https://www.r-bloggers.com/2013/01/the-three-dots-construct-in-r/).
 
 ## Body
 
 The function's body contains all of the code to perform the purpose of the function. Following our initial example, the body of the function is simply
 
-```{r eval=FALSE}         
+```{r eval=FALSE}
 x^2
 ```
 
@@ -821,10 +821,12 @@ However, if it is possible that different outputs can be produced by a function 
 f_compare <- function(x, y){
   # either missing?
   if(nargs() != 2)
-    return("invalid number of arguments")
+    stop(paste0("You provided ", nargs(), " argument(s).\n",
+                " This function requires two."))
   # numeric?
   if(!is.numeric(x) | !is.numeric(y)){
-    return(sprintf("%s or %s is not numeric.", x, y))
+    # return(sprintf("%s or %s is not numeric.", x, y))
+    stop(paste0(x, " or ", y, " is not numeric or integer."))
   }
   # comparisons follow
   if(x > y){
@@ -848,7 +850,6 @@ f_compare(1, 2)
 
 f_compare(2, 1)
 ```
-
 
 # Looping
 
@@ -895,6 +896,7 @@ for (i in 1:length(states_5)){
   s <- states_5[i]
   message(paste0(i, ": ", s))
 }
+
 ```
 
 ## Looping with `while()` loops
@@ -909,12 +911,9 @@ do something
 
 where `condition` represents a logical test or expression and the `condition is met` when the Boolean test returns the value `TRUE`.
 
-Let's print out numbers of the Fibonacci sequence below 100. The Fibonacci sequence begins with the numbers 1, 1, and then every term after that is the sum of the two terms before it. Formally, 
+Let's print out numbers of the Fibonacci sequence below 100. The Fibonacci sequence begins with the numbers 1, 1, and then every term after that is the sum of the two terms before it. Formally,
 
-$$a_1 = 1$$
-$$a_2 = 1$$
-$$a_n = a_{n-1} + a_{n-2}$$
-
+$$a_1 = 1$$ $$a_2 = 1$$ $$a_n = a_{n-1} + a_{n-2}$$
 
 ```{r while}
 ## Create vector with two initial terms.

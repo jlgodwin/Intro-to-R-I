@@ -11,7 +11,7 @@
 
 <meta name="author" content="Jessica Godwin &amp; Deven Hamilton" />
 
-<meta name="date" content="2026-06-23" />
+<meta name="date" content="2026-10-13" />
 
 <title>CSDE Workshop-Intro to R I: Objects &amp; Programming</title>
 
@@ -353,7 +353,7 @@ display: none;
 <h1 class="title toc-ignore">CSDE Workshop-Intro to R I: Objects &amp;
 Programming</h1>
 <h4 class="author">Jessica Godwin &amp; Deven Hamilton</h4>
-<h4 class="date">June 23, 2026</h4>
+<h4 class="date">October 13, 2026</h4>
 
 </div>
 
@@ -418,6 +418,11 @@ statements</a></li>
 loops</a></li>
 <li><a href="#looping-with-while-loops" id="toc-looping-with-while-loops">Looping with <code>while()</code>
 loops</a></li>
+</ul></li>
+<li><a href="#exercises" id="toc-exercises">Exercises</a>
+<ul>
+<li><a href="#functions-if" id="toc-functions-if">Functions +
+<code>if</code></a></li>
 </ul></li>
 </ul>
 </div>
@@ -601,9 +606,9 @@ age_jane &lt;- NA
 <code>FALSE</code> and 1 =<code>TRUE\</code>. In R these values are
 interconvertible. Other software (e.g., Excel, MS Access) may convert
 logical values to numbers that you do not expect.</p>
-<pre class="r"><code>(t &lt;- as.logical(1))</code></pre>
+<pre class="r"><code>(is_this_true &lt;- as.logical(1))</code></pre>
 <pre><code>## [1] TRUE</code></pre>
-<pre class="r"><code>(f &lt;- as.logical(0))</code></pre>
+<pre class="r"><code>(is_this_false &lt;- as.logical(0))</code></pre>
 <pre><code>## [1] FALSE</code></pre>
 </div>
 <div id="numeric" class="section level3">
@@ -784,6 +789,8 @@ arguments.</p>
 <pre><code>## [1] 51</code></pre>
 <pre class="r"><code>sd(v)</code></pre>
 <pre><code>## [1] 53.69171</code></pre>
+<pre class="r"><code>median(v)</code></pre>
+<pre><code>## [1] 52</code></pre>
 </div>
 </div>
 <div id="matrix" class="section level3">
@@ -800,19 +807,9 @@ to use the <code>matrix()</code> function to create a matrix.</p>
 ##  [73]  73  74  75  76  77  78  79  80  81  82  83  84  85  86  87  88  89  90
 ##  [91]  91  92  93  94  95  96  97  98  99 100</code></pre>
 <pre class="r"><code># load to a matrix
-(m1 &lt;- matrix(v, ncol = 10, byrow = TRUE))</code></pre>
-<pre><code>##       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-##  [1,]    1    2    3    4    5    6    7    8    9    10
-##  [2,]   11   12   13   14   15   16   17   18   19    20
-##  [3,]   21   22   23   24   25   26   27   28   29    30
-##  [4,]   31   32   33   34   35   36   37   38   39    40
-##  [5,]   41   42   43   44   45   46   47   48   49    50
-##  [6,]   51   52   53   54   55   56   57   58   59    60
-##  [7,]   61   62   63   64   65   66   67   68   69    70
-##  [8,]   71   72   73   74   75   76   77   78   79    80
-##  [9,]   81   82   83   84   85   86   87   88   89    90
-## [10,]   91   92   93   94   95   96   97   98   99   100</code></pre>
-<pre class="r"><code># different r, c ordering
+m1 &lt;- matrix(v, ncol = 10, byrow = TRUE)
+
+# different r, c ordering
 (m2 &lt;- matrix(v, ncol = 10, byrow = FALSE))</code></pre>
 <pre><code>##       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
 ##  [1,]    1   11   21   31   41   51   61   71   81    91
@@ -1153,16 +1150,16 @@ comprised of elements of different data type:</p>
 ## [[3]]
 ## [1] TRUE</code></pre>
 <p>Let’s modify that list a bit:</p>
-<pre class="r"><code>(l &lt;- list(&quot;a&quot;, 
-           1:20, 
-           as.logical(c(0,1,1,0))))</code></pre>
-<pre><code>## [[1]]
+<pre class="r"><code>(l &lt;- list(elem_one = &quot;a&quot;, 
+           elem_two = 1:20, 
+           elem_three = as.logical(c(0,1,1,0))))</code></pre>
+<pre><code>## $elem_one
 ## [1] &quot;a&quot;
 ## 
-## [[2]]
+## $elem_two
 ##  [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20
 ## 
-## [[3]]
+## $elem_three
 ## [1] FALSE  TRUE  TRUE FALSE</code></pre>
 <p>The top-level indexing for a list is denoted using two sets of square
 brackets. For example, the first element of our list can be accessed by
@@ -1172,24 +1169,24 @@ brackets. For example, the first element of our list can be accessed by
 <code>lapply()</code>:</p>
 <pre class="r"><code># show the data types
 (lapply(X = l, FUN = class))</code></pre>
-<pre><code>## [[1]]
+<pre><code>## $elem_one
 ## [1] &quot;character&quot;
 ## 
-## [[2]]
+## $elem_two
 ## [1] &quot;integer&quot;
 ## 
-## [[3]]
+## $elem_three
 ## [1] &quot;logical&quot;</code></pre>
 <pre class="r"><code># mean, maybe?
 (lapply(X = l, FUN = function(x) {mean(x)}))</code></pre>
 <pre><code>## Warning in mean.default(x): argument is not numeric or logical: returning NA</code></pre>
-<pre><code>## [[1]]
+<pre><code>## $elem_one
 ## [1] NA
 ## 
-## [[2]]
+## $elem_two
 ## [1] 10.5
 ## 
-## [[3]]
+## $elem_three
 ## [1] 0.5</code></pre>
 </div>
 <div id="factor" class="section level3">
@@ -1270,14 +1267,14 @@ print(BMI)</code></pre>
 <pre class="r"><code>ls()</code></pre>
 <pre><code>##  [1] &quot;a&quot;             &quot;age_jane&quot;      &quot;age_john&quot;      &quot;b&quot;            
 ##  [5] &quot;BMI&quot;           &quot;boston_zip&quot;    &quot;c&quot;             &quot;d&quot;            
-##  [9] &quot;e&quot;             &quot;f&quot;             &quot;h&quot;             &quot;i&quot;            
-## [13] &quot;inc&quot;           &quot;income&quot;        &quot;income_factor&quot; &quot;ja&quot;           
-## [17] &quot;jo&quot;            &quot;l&quot;             &quot;m1&quot;            &quot;m2&quot;           
-## [21] &quot;m3&quot;            &quot;matrix.a&quot;      &quot;matrix.b&quot;      &quot;matrix.c&quot;     
-## [25] &quot;matrix.col1&quot;   &quot;matrix.d&quot;      &quot;matrix.row&quot;    &quot;matrix.z&quot;     
-## [29] &quot;matrix.zero&quot;   &quot;my_zip&quot;        &quot;n&quot;             &quot;normvec100&quot;   
-## [33] &quot;q&quot;             &quot;t&quot;             &quot;v&quot;             &quot;x&quot;            
-## [37] &quot;y&quot;             &quot;z&quot;</code></pre>
+##  [9] &quot;e&quot;             &quot;h&quot;             &quot;i&quot;             &quot;inc&quot;          
+## [13] &quot;income&quot;        &quot;income_factor&quot; &quot;is_this_false&quot; &quot;is_this_true&quot; 
+## [17] &quot;ja&quot;            &quot;jo&quot;            &quot;l&quot;             &quot;m1&quot;           
+## [21] &quot;m2&quot;            &quot;m3&quot;            &quot;matrix.a&quot;      &quot;matrix.b&quot;     
+## [25] &quot;matrix.c&quot;      &quot;matrix.col1&quot;   &quot;matrix.d&quot;      &quot;matrix.row&quot;   
+## [29] &quot;matrix.z&quot;      &quot;matrix.zero&quot;   &quot;my_zip&quot;        &quot;n&quot;            
+## [33] &quot;normvec100&quot;    &quot;q&quot;             &quot;t&quot;             &quot;v&quot;            
+## [37] &quot;x&quot;             &quot;y&quot;             &quot;z&quot;</code></pre>
 <p>Here we see we have in our environment the objects we created . If we
 assign a new value to it will overwrite what is already stored in that
 object</p>
@@ -1337,10 +1334,10 @@ of the last two arguments of <code>ifelse()</code>.</p>
 <p>Suppose we want to create new labels for our <code>income</code>
 variable that are more plot friendly.</p>
 <pre class="r"><code>case_when(grepl(&quot;\\$10,0&quot;, income) ~ &quot;&lt;10K&quot;,
-          grepl(&quot;^\\$5&quot;, income) ~ &quot;50K-90K&quot;,
+          grepl(&quot;^\\$5&quot;, income) ~ &quot;50K-100K&quot;,
           grepl(&quot;^\\$100&quot;, income) ~ &quot;100K-200K&quot;,
           TRUE ~ NA)</code></pre>
-<pre><code>## [1] &quot;&lt;10K&quot;      &quot;&lt;10K&quot;      &quot;50K-90K&quot;   &quot;100K-200K&quot; NA</code></pre>
+<pre><code>## [1] &quot;&lt;10K&quot;      &quot;&lt;10K&quot;      &quot;50K-100K&quot;  &quot;100K-200K&quot; NA</code></pre>
 </div>
 <div id="if-statements-1" class="section level2">
 <h2><code>if</code> statements</h2>
@@ -1354,16 +1351,16 @@ x_vec &lt;- rnorm(n_samp)
 ## Test if even
 n_samp %/% 2</code></pre>
 <pre><code>## [1] 50</code></pre>
-<pre class="r"><code>n_samp %% 0</code></pre>
-<pre><code>## [1] NaN</code></pre>
+<pre class="r"><code>n_samp %% 2</code></pre>
+<pre><code>## [1] 0</code></pre>
 <pre class="r"><code>if(length(x_vec) == 0){
   stop(&quot;x_vec must have length larger than 0.\n&quot;)
-}else if((n_samp %% 2) == 0){
-  return(x_vec[n_samp/2])
+}else if((n_samp %% 2) != 0){
+  return(x_vec[(n_samp %/% 2) + 1])
 }else{
   return(mean(x_vec[(n_samp %/% 2):((n_samp %/% 2) + 1)]))
 }</code></pre>
-<pre><code>## [1] -0.3925989</code></pre>
+<pre><code>## [1] 0.2767448</code></pre>
 </div>
 </div>
 <div id="rfunc" class="section level1">
@@ -1410,9 +1407,9 @@ argument named “x” that is a numeric vector.</p>
 environment of the function, <code>x</code> is a variable by using
 <code>print(x)</code>:</p>
 <pre class="r"><code>f_square_2 &lt;- function(x){
-  message(&quot;input:&quot;)
+  message(&quot;input:\n&quot;)
   print(x)
-  message(&quot;output:&quot;)
+  message(&quot;output:\n&quot;)
   x^2
 }
 
@@ -1423,7 +1420,7 @@ f_square_2(c(1,2,3))</code></pre>
 <pre><code>## [1] 1 4 9</code></pre>
 <div id="the-...-argument" class="section level3">
 <h3>The <code>...</code> argument</h3>
-<p>When functions do not have a known <em>a priori</em> number or set of
+<p>When functions do not have a known a priori number or set of
 arguments, or when a large number of arguments is to be passed to
 another function the <code>...</code> argument is used. We will not
 cover this here, but you are encouraged to read more: <a href="https://www.dummies.com/programming/r/how-to-use-the-dots-argument-in-r/">How
@@ -1492,10 +1489,12 @@ function:</p>
 <pre class="r"><code>f_compare &lt;- function(x, y){
   # either missing?
   if(nargs() != 2)
-    return(&quot;invalid number of arguments&quot;)
+    stop(paste0(&quot;You provided &quot;, nargs(), &quot; argument(s).\n&quot;,
+                &quot; This function requires two.&quot;))
   # numeric?
   if(!is.numeric(x) | !is.numeric(y)){
-    return(sprintf(&quot;%s or %s is not numeric.&quot;, x, y))
+    # return(sprintf(&quot;%s or %s is not numeric.&quot;, x, y))
+    stop(paste0(x, &quot; or &quot;, y, &quot; is not numeric or integer.&quot;))
   }
   # comparisons follow
   if(x &gt; y){
@@ -1511,9 +1510,10 @@ function:</p>
 <p>Based on criteria such as the number of arguments or the relative
 value of the arguments <code>x</code> and <code>y</code>, different
 outputs are generated. Here are a few examples running the function:</p>
-<pre class="r"><code>f_compare(1)</code></pre>
-<pre><code>## [1] &quot;invalid number of arguments&quot;</code></pre>
-<pre class="r"><code>f_compare(1, 2)</code></pre>
+<pre class="r"><code>## Uncomment the line below to run it.
+# f_compare(1)
+
+f_compare(1, 2)</code></pre>
 <pre><code>## [1] &quot;1 is less than 2&quot;</code></pre>
 <pre class="r"><code>f_compare(2, 1)</code></pre>
 <pre><code>## [1] &quot;2 is greater than 1&quot;</code></pre>
@@ -1621,6 +1621,42 @@ print(sequence[1])</code></pre>
 ## [1]  1  1  2  3  5  8 13 21 34
 ##  [1]  1  1  2  3  5  8 13 21 34 55
 ##  [1]  1  1  2  3  5  8 13 21 34 55 89</code></pre>
+</div>
+</div>
+<div id="exercises" class="section level1">
+<h1>Exercises</h1>
+<div id="functions-if" class="section level2">
+<h2>Functions + <code>if</code></h2>
+<ol style="list-style-type: decimal">
+<li><p>Write a function called <code>roll_die</code> that simulates the
+rolling of a 20-sided letter die, like that used in the game
+Scattergories. The function should have one argument called
+<code>n_rolls</code> that determines the number of times the die should
+be rolled. <strong>Hints:</strong></p>
+<ul>
+<li>The base <code>R</code> object <code>LETTERS</code> and base
+<code>R</code> function <code>sample</code> will be helpful.</li>
+<li>From <a href="https://en.wikipedia.org/wiki/Scattergories">Wikipedia</a>, “The
+Scattergories 20-sided die includes the letters A, B, C, D, E, F, G, H,
+I, J, K, L, M, N, O, P, R, S, T, and W and excludes the letters Q, U, V,
+X, Y, and Z.”</li>
+</ul></li>
+<li><p>Modify the <code>roll_die</code> function to roll EITHER a
+20-sided letter die or a 20-sided number die. Add a second argument
+called <code>type</code> that determines whether the simulated die roll
+will be for a number or letter die. Make the <code>type</code> argument
+default to letter die.</p></li>
+<li><p>Write a for loop that loops through each letter of the alphabet
+and lists prints out the U.S. states that contain each letter of the
+alphabet in a sentence like, “The letter x is contained in Texas.”
+<strong>Hints:</strong></p>
+<ul>
+<li>The base <code>R</code> objects <code>state.name</code>,
+<code>LETTERS</code> and/or <code>letters</code> and base <code>R</code>
+funtions <code>tolower</code> or <code>toupper</code> may be
+helpful.</li>
+</ul></li>
+</ol>
 </div>
 </div>
 

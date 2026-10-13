@@ -1,7 +1,7 @@
 ---
 title: "CSDE Workshop-Intro to R I: Objects & Programming"
 author: "Jessica Godwin & Deven Hamilton"
-date: "June 23, 2026"
+date: "October 13, 2026"
 output: 
  html_document:
    toc: true
@@ -844,7 +844,8 @@ f_compare <- function(x, y){
 Based on criteria such as the number of arguments or the relative value of the arguments `x` and `y`, different outputs are generated. Here are a few examples running the function:
 
 ```{r}
-f_compare(1)
+## Uncomment the line below to run it.
+# f_compare(1)
 
 f_compare(1, 2)
 
@@ -931,3 +932,18 @@ while(sequence[length(sequence)] +
 }
 
 ```
+
+# Exercises
+
+## Functions + `if`
+
+1.  Write a function called `roll_die` that simulates the rolling of a 20-sided letter die, like that used in the game Scattergories. The function should have one argument called `n_rolls` that determines the number of times the die should be rolled. **Hints:**
+
+    -   The base `R` object `LETTERS` and base `R` function `sample` will be helpful.
+    -   From [Wikipedia](https://en.wikipedia.org/wiki/Scattergories), "The Scattergories 20-sided die includes the letters A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, R, S, T, and W and excludes the letters Q, U, V, X, Y, and Z."
+
+2.  Modify the `roll_die` function to roll EITHER a 20-sided letter die or a 20-sided number die. Add a second argument called `type` that determines whether the simulated die roll will be for a number or letter die. Make the `type` argument default to letter die.
+
+3.  Write a for loop that loops through each letter of the alphabet and lists prints out the U.S. states that contain each letter of the alphabet in a sentence like, "The letter x is contained in Texas." **Hints:**
+
+    -   The base `R` objects `state.name`, `LETTERS` and/or `letters` and base `R` funtions `tolower` or `toupper` may be helpful.
